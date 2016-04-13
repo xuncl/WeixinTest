@@ -2,30 +2,10 @@
 
 
 $data='{
-           "touser":"oQoIuwPcoG_fwLMDiJGWdZ4RmGmI",
-           "template_id":"qSYtIJbPyojkEs0RkgI_91MgwWXX7XJwXVCkg7H1mR4",
-           "url":"http://www.baidu.com/",
-           "topcolor":"#FF0000",            
-           "data":{
-                   "first": {
-                       "value":"你好，你收到了新消息！（测试）",
-                       "color":"#173177"
-                   },
-                   "orderMoneySum":{
-                       "value":"42.0元",
-                       "color":"#173177"
-                   },
-                   "orderProductName": {
-                       "value":"烫烫烫锟斤拷",
-                       "color":"#173177"
-                   },
-                   "Remark":{
-                       "value":"我们是超级矿资源！微信号：cjkzy005",
-                       "color":"#173177"
-                   }
-           }
+          "industry_id1":"1",
+          "industry_id2":"14"
        }';
-$sendUrl="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".getToken();
+$sendUrl="https://api.weixin.qq.com/cgi-bin/template/api_set_industry?access_token=".getToken();
 $sendarr=(array)json_decode(postOutput($data,$sendUrl));
 // echo $shortarr['short_url'];
 print_r($sendarr);
