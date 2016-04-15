@@ -2,10 +2,10 @@
 /**
   * wechat php test
   */
-
 //define your token
 define("TOKEN", "weixin");
-$wechatObj = new wechatCallbackapiTest();
+$wechatObj = new wechatCallbackapiTest(); 
+
 if($_GET["echostr"]){
     $wechatObj->valid();
 }else{
@@ -84,7 +84,7 @@ class wechatCallbackapiTest
                     echo $resultStr;
                 }
                 if($Event=="subscribe"){
-                    if (substr($EventKey, 0, 8)="qrscene_"){
+                    if (substr($EventKey, 0, 8)=="qrscene_"){
                         $msgType = "text";
                         $contentStr = "欢迎通过二维码关注我们！";
                         $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
@@ -119,10 +119,21 @@ class wechatCallbackapiTest
                             </item>
                             </Articles>
                             </xml>";
-                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time);
-                    echo $resultStr;
+                        $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time);
+                        echo $resultStr;
                     }
-                   
+                     
+                    $firstTwoKeyWord = mb_substr($keyword, 0,2,"utf8");
+                    if ($firstTwoKeyWord=="天气"){
+                        $city = mb_substr($keyword, 2,7,"utf8");
+                        //TODO:传参给getWeather.php
+
+                        $msgType = "text";
+                        $contentStr = getWeather($city);
+                        $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                        echo $resultStr; 
+                    }
+                    
                     $msgType = "text";
                     $contentStr = "你发送了".$keyword;
                     $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
@@ -162,5 +173,38 @@ class wechatCallbackapiTest
 		}
 	}
 }
+
+function getWeather($city){
+
+    $urlCityName=urlencode($city);
+    $sendUrl="http://v.juhe.cn/weather/index?format=2&cityname=".$urlCityName."&key=cb78c4298bbb832580d7f156a4ddee97";
+    $sendarr=(array)json_decode(getOutput($sendUrl));
+    $result = (array)$sendarr['result'];
+    $sk = (array)$result['sk'];
+    $temp = " 当前温度:".$sk['temp'];
+    $wind = " 当前风力:".$sk['wind_direction'].$sk['wind_strength'];
+    $time = " 当前时间:".$sk['time'];
+    $today = (array)$result['today'];
+    $temperature = " 今日温度:".$today['temperature'];
+    $weather = " 今日天气:".$today['weather'];
+    $date_y = " 日期:".$today['date_y'];
+    $dressing_advice=" 穿衣指数：".$today['dressing_advice'];
+    $res = "".$city.$date_y."\n".$temperature.$weather."\n"."-".$time.$temp.$wind."\n".$dressing_advice;
+    return $res;
+}
+
+
+function getOutput($url){
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $output = curl_exec($ch);
+    curl_close($ch);
+    return $output;
+}
+
 
 ?>
