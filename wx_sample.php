@@ -122,8 +122,29 @@ class wechatCallbackapiTest
                         $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time);
                         echo $resultStr;
                     }
+
                      
                     $firstTwoKeyWord = mb_substr($keyword, 0,2,"utf8");
+                    if($firstTwoKeyWord=="超级"||$firstTwoKeyWord=="快煤"||$firstTwoKeyWord=="物云"||$firstTwoKeyWord=="主页"||$firstTwoKeyWord=="你好"){
+                         $textTpl = "<xml>
+                            <ToUserName><![CDATA[%s]]></ToUserName>
+                            <FromUserName><![CDATA[%s]]></FromUserName>
+                            <CreateTime>%s</CreateTime>
+                            <MsgType><![CDATA[news]]></MsgType>
+                            <ArticleCount>1</ArticleCount>
+                            <Articles>
+                            <item>
+                            <Title><![CDATA[超级矿资源]]></Title> 
+                            <Description><![CDATA[超级矿资源信息平台]]></Description>
+                            <PicUrl><![CDATA[http://xclwx.applinzi.com/copyright2.png]]></PicUrl>
+                            <Url><![CDATA[http://xclwx.applinzi.com/]]></Url>
+                            </item>
+                            </Articles>
+                            </xml>";
+                        $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time);
+                        echo $resultStr;
+                    }
+
                     if ($firstTwoKeyWord=="天气"){
                         $city = mb_substr($keyword, 2,7,"utf8");
                         //TODO:传参给getWeather.php
